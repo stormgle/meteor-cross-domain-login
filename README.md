@@ -1,2 +1,9 @@
-# meteor-cross-domain-login
-Meteor package that synchronizes login states across domains sharing same accounts users database
+CROSS-DOMAIN PACKAGE
+===================
+
+How to use
+-----
+
+
+API
+---
