@@ -1,4 +1,6 @@
+"use strict"
 
+import Util from "meteor/stormgle:util";
 import ServiceHandler from "./imports/class/service-handler.js";
 
 export const xdomain = {
@@ -22,6 +24,13 @@ export const xdomain = {
         if (this._loginCredential) {
           console.log (this._loginCredential);
           evt.source.postMessage(this._loginCredential, origin);
+        }
+        // invoke callback
+        if (this._serviceHandlers[origin]._done) {
+          this._serviceHandlers[origin]._done.apply(
+            undefined,
+            this._serviceHandlers[origin]._windowHandler
+          );
         }
       }
     }
@@ -47,14 +56,26 @@ export const xdomain = {
     }
   }, // end receiveMessage
 
-  open : function (url, name, features) {
-    // need to validate arguments
+  open : function (/* url, name, features, callback */) {
+    
+    let args = Array.prototype.slice.call(arguments);
+               
+    let url = '', name = '', features = '', callback = null;        
+    // validate and retrieve              
+    args.forEach( arg => {
+      if (Util.isURL(arg)) { url = arg; return; }
+      if (Util.isExpr(arg)) { features = arg; return; }      
+      if (Util.isFunction(arg)) { callback = arg; return; }     
+      // finally, get name if it is a string but not match URL and expression
+      if (Util.isString(arg)) { name = arg; return;}
+    });
     const handler = window.open(url, name, features);
     this._serviceHandlers[url] = new ServiceHandler(
       url,
       handler,
       this._pingDelay,
-      this._reTry
+      this._reTry,
+      callback
     );
     this._serviceHandlers[url].ping();
   }, // end open

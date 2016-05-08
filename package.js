@@ -16,6 +16,8 @@ Package.onUse(function(api) {
   api.use('ecmascript');
   api.use('accounts-base');
   api.use('tracker');
+  
+  api.use('stormgle:util');
 
   api.mainModule('cross-domain.js','client');
 

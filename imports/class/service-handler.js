@@ -1,16 +1,17 @@
+"use strict"
 
 export default class ServiceHandler {
 
-  constructor (url, windowHandler, pingDelay, reTry) {
+  constructor (url, windowHandler, pingDelay, reTry, done) {
     // need to validate arguments
     this._url = url;
     this._windowHandler = windowHandler;
-
-    this._timer = {};
     this._reTry = reTry || 300;
     this._pingDelay = pingDelay || 10;
-    this._tryConnect = 0;
-
+    this._done = done || null;
+    
+    this._timer = {};        
+    this._tryConnect = 0; 
   }
 
   ping () {
